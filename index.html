@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+        <!--  -->
+        <link type="text/css" rel="stylesheet" href="style.css">
+		<title>BackToGolfTour!</title>
+	</head>
+	<body>
+        <!-- -->
+        <canvas id="renderCanvas"></canvas>
+        <script type="module">
+            //'use strict'; // Just 4 Fun
+			import * as THREE from '/lib/three.module.js';
+			
+
+            const canvas = document.querySelector( "#renderCanvas" );
+
+            let renderer = null, scene = null, camera = null, light = null;
+
+            /**  Render Settings **/
+            renderer = new THREE.WebGLRenderer( {canvas: canvas, antialias: true, } );
+            renderer.setSize( window.innerWidth, window.innerHeight );
+            renderer.setPixelRatio( Math.min( window.devicePixelRatio, 2 ) );
+
+            /** Scene **/
+            scene = new THREE.Scene();
+
+            // Axes Helper, red(x), blue(z), green(y)
+            const axesHelper = new THREE.AxesHelper( 5 );
+            scene.add( axesHelper );
+
+            /** Camera **/
+            camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+            camera.position.z = 8;
+            scene.add( camera );
+
+
+            /** Lights **/
+            // Ambient light
+            const ambientLight = new THREE.AmbientLight( '#ffffff', 0.8 );
+            scene.add( ambientLight );
+
+            // Directional light
+            const sunLight = new THREE.DirectionalLight( '#ffffff', 0.5 );
+            sunLight.position.set( 0, 0, 2 );
+            scene.add( sunLight );
+
+
+            /** Mesh && Geometry**/
+
+///////////////////////////////////////////////////////////////////////////////// INICIO BANDERA DE GOLF
+
+            const banderaGroup = new THREE.Group();
+        
+            //La varilla de la bandera
+            const banderaMesh = new THREE.Mesh(
+                new THREE.CylinderBufferGeometry( 0.03, 0.03, 2.5, 32 ),
+                new THREE.MeshStandardMaterial( { color: 'white' } )
+            )
+            banderaMesh.position.y = 0.76;
+       
+            //El hoyo de la bandera
+            const hoyoMesh = new THREE.Mesh(
+                new THREE.CylinderBufferGeometry( 0.2, 0.2, 0.5, 32, 32, true ),
+                new THREE.MeshStandardMaterial( { color: '#A0522D', side: THREE.DoubleSide } )
+            );
+            hoyoMesh.position.y = -0.25+0.001;
+
+            const tapaMesh = new THREE.Mesh( 
+                new THREE.CircleGeometry( 0.2, 32 ),
+                new THREE.MeshBasicMaterial( { color: '#A0522D', side: THREE.DoubleSide } )
+            );
+            tapaMesh.rotation.x = Math.PI / 2;
+            tapaMesh.position.y = -0.5;
+        
+            const banderaOndulante = new THREE.Mesh(
+                new THREE.PlaneGeometry( 5/6,3/6, 20, 20),
+                //new THREE.MeshStandardMaterial({map: texture, wireframe:false, side: DoubleSide})
+                new THREE.MeshStandardMaterial({ color: 'red', wireframe:false, side: THREE.DoubleSide})
+            )
+
+            banderaOndulante.position.set(0.4,1.75,0);
+
+            banderaGroup.add(hoyoMesh, tapaMesh,banderaMesh, banderaOndulante);
+            
+            // Comentar para quitar de la escena.
+            scene.add(banderaGroup);
+
+            function banderaWind(elapsedTime){
+                banderaOndulante.geometry.vertices.map(vertices => {
+                    const MovX1 =  0.5 * Math.sin(vertices.x * (2/6) + elapsedTime);
+                    const MovX2 =  0.25 * Math.sin(vertices.x * (3/6) + elapsedTime * 2/6);
+                    const MovY1 = 0.1 * Math.sin(vertices.y * (5/6) + elapsedTime * 0.5/6);
+                    const MovB = (vertices.x + 2.5/6) / (5/6);
+                    vertices.z =(MovX1 + MovX2 + MovY1) * MovB;
+                });
+
+                banderaOndulante.geometry.verticesNeedUpdate = true;
+            }
+// FIN BANDERA DE GOLF /////////////////////////////////////////////////////////////////////////////// 
+
+///////////////////////////////////////////////////////////////////////////////// INICIO ARBOLES
+class Pino{
+    constructor( _x = 0, _y = 0, _z = 0 ){
+            const arbolGroup = new THREE.Group();
+
+            const troncoMesh = new THREE.Mesh(
+                new THREE.BoxBufferGeometry(0.3,1,0.3),
+                new THREE.MeshStandardMaterial({color: '#8B4513'})
+            );
+            
+            const copasMaterial = new THREE.MeshStandardMaterial({color:'green'});
+
+            const copasInfMesh = new THREE.Mesh(
+                new THREE.ConeBufferGeometry(1, 1.5, 4),
+                copasMaterial
+            );
+            const copasMedMesh = new THREE.Mesh(
+                new THREE.ConeBufferGeometry(0.7, 1, 4),
+                copasMaterial
+            );
+            const copasSupMesh = new THREE.Mesh(
+                new THREE.ConeBufferGeometry(0.5, 1, 4),
+                copasMaterial
+            );
+            troncoMesh.position.y = 0.5;
+            copasSupMesh.position.y = 2.8;
+            copasInfMesh.position.y = 1.5;
+            copasMedMesh.position.y = 2.2;
+            arbolGroup.add(troncoMesh,copasInfMesh, copasMedMesh, copasSupMesh);
+            arbolGroup.position.x = _x;
+            arbolGroup.position.y = _y;
+            arbolGroup.position.z = _z;
+            scene.add(arbolGroup);
+    }
+}
+
+class Arbol{
+    constructor(_x = 0, _y = 0, _z = 0){
+        const arbolGroup = new THREE.Group();
+        const troncoMesh = new THREE.Mesh(
+            new THREE.BoxBufferGeometry(0.3,1,0.3),
+            new THREE.MeshStandardMaterial({color: '#8B4513'})
+        );
+        
+        const copasMaterial = new THREE.MeshStandardMaterial({color:'green'});
+        const copasMesh = new THREE.Mesh(
+            new THREE.SphereBufferGeometry(1, 10, 10),
+            copasMaterial
+        );
+        const copasMesh2 = new THREE.Mesh(
+            new THREE.SphereBufferGeometry(0.7, 10, 10),
+            copasMaterial
+        );
+        const copasMesh3 = new THREE.Mesh(
+            new THREE.SphereBufferGeometry(0.5, 10, 10),
+            copasMaterial
+        );
+        troncoMesh.position.y = 0.5;
+        copasMesh3.position.y = 3.0;
+        copasMesh.position.y = 1.5;
+        copasMesh2.position.y = 2.2;
+        arbolGroup.add(troncoMesh,copasMesh, copasMesh2, copasMesh3);
+        arbolGroup.position.x = _x;
+        arbolGroup.position.y = _y;
+        arbolGroup.position.z = _z;
+        scene.add(arbolGroup);
+    }
+}
+// Comentar para quitar de la escena.
+
+let bosques = [];
+for (let index = 1; index < 10; index++) {
+    if(index % 2 == 0){
+
+    bosques.push(new Arbol(index *2, 0, index));
+    bosques.push(new Arbol((2+ index) *2, 0, 0));
+    bosques.push(new Arbol((2+ index) *-2, 0, 0));
+    bosques.push(new Arbol(index,0,(2+ index) *-2));
+    }else{
+    bosques.push(new Pino(index *2, 0, index));
+    bosques.push(new Pino((2+ index) *2, 0, 0));
+    bosques.push(new Pino((2+ index) *-2, 0, 0));
+    bosques.push(new Pino(index,0,(2+ index) *-2));
+    }
+
+}
+// FIN ARBOLES /////////////////////////////////////////////////////////////////////////////// 
+
+///////////////////////////////////////////////////////////////////////////////// INICIO PELOTA DE GOLF
+const sphere = new THREE.Mesh(
+    new THREE.SphereBufferGeometry(0.1, 32, 32),
+    new THREE.MeshStandardMaterial({ roughness: 0.7 })
+)
+sphere.position.y = 0.1;
+// Comentar para quitar de la escena.
+scene.add(sphere);
+
+// FIN PELOTA DE GOLF /////////////////////////////////////////////////////////////////////////////// 
+
+            /** Animate **/
+            const clock = new THREE.Clock();
+
+            const animate = () => {
+                const elapsedTime = clock.getElapsedTime();
+                
+                banderaWind(elapsedTime);
+            
+
+                renderer.render( scene, camera );
+                
+                // Target => 60 fps
+                window.requestAnimationFrame(animate);
+            };
+
+            animate();
+
+
+            // Resize
+            window.addEventListener('resize', () => 
+            {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize( window.innerWidth, window.innerHeight );
+                renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            });
+
+        </script>
+
+
+	</body>
+</html>
