@@ -12,10 +12,8 @@
         <!-- -->
         <canvas id="renderCanvas"></canvas>
         <script type="module">
-            //'use strict'; // Just 4 Fun
             import * as THREE from '/lib/three.module.js';
 			
-
             const canvas = document.querySelector( "#renderCanvas" );
 
             let renderer = null, scene = null, camera = null;
@@ -24,7 +22,10 @@
             renderer = new THREE.WebGLRenderer( {canvas: canvas, antialias: true, } );
             renderer.setSize( window.innerWidth, window.innerHeight );
             renderer.setPixelRatio( Math.min( window.devicePixelRatio, 2 ) );
-
+            renderer.outputEncoding = THREE.sRGBEncoding;
+            renderer.toneMapping = THREE.ACESFilmicToneMapping;
+            renderer.toneMappingExposure = 0.60;
+            
             /** Scene **/
             scene = new THREE.Scene();
 
@@ -34,19 +35,19 @@
 
             /** Camera **/
             camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
-            camera.position.y = 6; 
-            camera.position.z = 10;
+            camera.position.y = 5; 
+            camera.position.z = 20;
             scene.add( camera );
 
 
             /** Lights **/
             // Ambient light
-            const ambientLight = new THREE.AmbientLight( '#ffffff', 0.8 );
+            const ambientLight = new THREE.AmbientLight( '#ffffff', 0.5 );
             scene.add( ambientLight );
 
             // Directional light
             const sunLight = new THREE.DirectionalLight( '#ffffff', 0.5 );
-            sunLight.position.set( 0, 0, 2 );
+            sunLight.position.set( 4, 5, -2 );
             scene.add( sunLight );
 
 
@@ -108,7 +109,7 @@
                     const arbolGroup = new THREE.Group();
 
                     const troncoMesh = new THREE.Mesh(
-                        new THREE.BoxBufferGeometry( 0.3, 1, 0.3 ),
+                        new THREE.BoxBufferGeometry( 0.3, 1.5, 0.3 ),
                         new THREE.MeshStandardMaterial( {color: '#8B4513'} )
                     );
                     
@@ -142,7 +143,7 @@
             constructor( _x = 0, _y = 0, _z = 0 ){
                 const arbolGroup = new THREE.Group();
                 const troncoMesh = new THREE.Mesh(
-                    new THREE.BoxBufferGeometry( 0.3 ,1, 0.3 ),
+                    new THREE.BoxBufferGeometry( 0.3 ,1.5, 0.3 ),
                     new THREE.MeshStandardMaterial( {color: '#8B4513'} )
                 );
                 
@@ -159,7 +160,7 @@
                     new THREE.SphereBufferGeometry( 0.5, 10, 10 ),
                     copasMaterial
                 );
-                troncoMesh.position.y = 0.5;
+                troncoMesh.position.y = 0;
                 copasMesh3.position.y = 3.0;
                 copasMesh.position.y = 1.5;
                 copasMesh2.position.y = 2.2;
@@ -173,20 +174,56 @@
         
         // Comentar para quitar de la escena.
         let bosques = [];
-        for ( let index = 1; index < 10; index++ ) {
-            if( index % 2 == 0 ){
-                bosques.push(new Arbol(index *2, 0, index));
-                bosques.push(new Arbol((2+ index) *2, 0, 0));
-                bosques.push(new Arbol((2+ index) *-2, 0, 0));
-                bosques.push(new Arbol(index,0,(2+ index) *-2));
-            }else{
-                bosques.push(new Pino(index *2, 0, index));
-                bosques.push(new Pino((2+ index) *2, 0, 0));
-                bosques.push(new Pino((2+ index) *-2, 0, 0));
-                bosques.push(new Pino(index,0,(2+ index) *-2));
+
+        bosques.push( new Arbol(-16,0,-9) );
+        bosques.push( new Arbol(-14,0,-9) );
+        bosques.push( new Arbol(-15.5,0,-7) );
+        bosques.push( new Arbol(-16,0,9) );
+        bosques.push( new Arbol(-16,0,7) );
+        bosques.push( new Arbol(-14,0,9.5) );
+        bosques.push( new Arbol(0,0,-9) );
+        bosques.push( new Arbol(5,0,-8.5) );
+        bosques.push( new Arbol(3,0,-9) );
+        bosques.push( new Arbol(-3,0,-8) );
+        bosques.push( new Arbol(-8,0,-9.5) );
+        bosques.push( new Arbol(-10,0,-9.5) );
+        bosques.push( new Pino(-7,0,0) );
+        bosques.push( new Pino(-9,1.5,-6) );
+        bosques.push( new Pino(-9,1.5,-3) );
+        bosques.push( new Pino(-11,1.5,-2) );
+        bosques.push( new Pino(-11,1.5,2) );
+        bosques.push( new Pino(-13,1.5,4) );
+        bosques.push( new Pino(-10,1.5,5) );
+        bosques.push( new Pino(-12,1,7) );
+
+// FIN ARBOLES /////////////////////////////////////////////////////////////////////////////// 
+
+///////////////////////////////////////////////////////////////////////////////// INICIO ARBUSTOS
+        class Arbusto{
+            constructor( _x, _y, _z ){
+                const arbustoMesh = new THREE.Mesh(
+                    new THREE.SphereBufferGeometry( 7 ),
+                    new THREE.MeshStandardMaterial( { color: '#0FFF00' } )
+                );
+                arbustoMesh.rotation.x = Math.PI /2;
+                arbustoMesh.scale.set(0.1,0.1,0.1);
+                arbustoMesh.position.y = _y;
+                arbustoMesh.position.x = _x;
+                arbustoMesh.position.z = _z;
+                scene.add( arbustoMesh );
             }
         }
-// FIN ARBOLES /////////////////////////////////////////////////////////////////////////////// 
+
+        // Comentar para quitar de la escena.
+        let arbustos = [];
+        arbustos.push( new Arbusto(7.5,0.5,8) );
+        arbustos.push( new Arbusto(7.5,0.1,7) );
+        arbustos.push( new Arbusto(7,0.1,9) );
+        arbustos.push( new Arbusto(7.5,0.5,-8) );
+        arbustos.push( new Arbusto(7.5,0.1,-7) );
+        arbustos.push( new Arbusto(7,0.1,-9) );
+
+// FIN ARBUSTOS /////////////////////////////////////////////////////////////////////////////// 
 
 ///////////////////////////////////////////////////////////////////////////////// INICIO PELOTA DE GOLF
         const pelotaMesh = new THREE.Mesh(
@@ -204,62 +241,214 @@
 ///////////////////////////////////////////////////////////////////////////////// INICIO NUBES
         class Nube{
             constructor( _x, _y, _z ){
-                const nubeGroup = new THREE.Group();
-                const frenteNubeMesh = new THREE.Mesh(
-                    new THREE.TorusKnotGeometry( 5, 7, 22, 20 ),
+                const nubeMesh = new THREE.Mesh(
+                    new THREE.TorusKnotBufferGeometry( 5, 7, 22, 20 ),
                     new THREE.MeshStandardMaterial()
                 );
-                const colaNubeMesh = new THREE.Mesh(
-                    new THREE.TorusKnotGeometry( 5, 7, 22, 20 ),
-                    new THREE.MeshStandardMaterial()
-                );
-                frenteNubeMesh.position.x = 0;
-                colaNubeMesh.position.x = 4;
-                nubeGroup.add( frenteNubeMesh, colaNubeMesh );
-                nubeGroup.scale.set( 0.3, 0.1, 0.2 );
-                nubeGroup.position.x = _x;
-                nubeGroup.position.y = _y;
-                nubeGroup.position.z = _z;
-                scene.add( nubeGroup );
+                nubeMesh.scale.set( 0.3, 0.1, 0.2 );
+                nubeMesh.position.x = _x;
+                nubeMesh.position.y = _y;
+                nubeMesh.position.z = _z;
+                scene.add( nubeMesh );
             }
-
         }
 
         // Comentar para quitar de la escena.
         let nubes = [];
 
-        nubes.push(new Nube(0, 13, -2));
-        nubes.push(new Nube(10, 13, 2));
-        nubes.push(new Nube(-10, 13, 2));
+        nubes.push( new Nube(0, 13, -2) );
+        nubes.push( new Nube(10, 13, 2) );
+        nubes.push( new Nube(-10, 13, 2) );
 
 // FIN NUBES /////////////////////////////////////////////////////////////////////////////// 
 
-            /** Animate **/
-            const clock = new THREE.Clock();
+///////////////////////////////////////////////////////////////////////////////// INICIO TERRENO
 
-            const animate = () => {
-                const elapsedTime = clock.getElapsedTime();
+        const greenMesh = new THREE.Mesh(
+            new THREE.RingBufferGeometry( 0.2, 4, 32, 30 ),
+            new THREE.MeshStandardMaterial( { color: '#43A047' } )
+        );
+        greenMesh.rotation.x = -Math.PI / 2;
+        // Comentar para quitar de la escena.
+        scene.add( greenMesh );
+
+        // Terreno 
+        const terrenoGroup = new THREE.Group();
+        const terrenoMaterial = new THREE.MeshStandardMaterial( { color: '#1B5E15' } ); 
+
+        const terrenoSuperiorMesh = new THREE.Mesh( 
+            new THREE.PlaneBufferGeometry( 25, 10 ), 
+            terrenoMaterial
+        );
+        terrenoSuperiorMesh.rotation.x = -Math.PI / 2;
+        terrenoSuperiorMesh.position.y -= 0.009;
+        terrenoSuperiorMesh.position.z = -5.2;
+
+        const terrenoInferiorMesh = new THREE.Mesh( 
+            new THREE.PlaneBufferGeometry( 25, 10 ), 
+            terrenoMaterial
+        );
+        terrenoInferiorMesh.rotation.x = -Math.PI / 2;
+        terrenoInferiorMesh.position.y -= 0.009;
+        terrenoInferiorMesh.position.z = 5.2;
+
+        const terrenoMedioMesh = new THREE.Mesh( 
+            new THREE.PlaneBufferGeometry( 15, 0.4 ), 
+            terrenoMaterial
+        );
+        terrenoMedioMesh.rotation.x = -Math.PI / 2;
+        terrenoMedioMesh.position.y -= 0.009;
+        terrenoMedioMesh.position.x = -5;
+
+        const terrenoMedioMesh2 = new THREE.Mesh( 
+            new THREE.PlaneBufferGeometry( 5, 0.4 ), 
+            terrenoMaterial
+        );
+        terrenoMedioMesh2.rotation.x = -Math.PI / 2;
+        terrenoMedioMesh2.position.x = 10;
+        terrenoMedioMesh2.position.y -= 0.009;
+
+        terrenoGroup.add( terrenoSuperiorMesh, terrenoInferiorMesh, terrenoMedioMesh, terrenoMedioMesh2 );
+        terrenoGroup.position.x = -4;
+        // Comentar para quitar de la escena.
+        scene.add( terrenoGroup );
+
+        // Colinas
+        const colinaGroup = new THREE.Group(); 
+        const colinaMaterial = new THREE.MeshStandardMaterial( { color: '#1B5E20' } );
+
+        const points = [];
+        for ( let i = 0; i < 10; i++ ) {
+            points.push( new THREE.Vector2( Math.sin( i * 0.2 ) * 10 + 5, ( i - 5 ) * 2 ) );
+        }
+
+        const colinaIzqMesh = new THREE.Mesh( 
+            new THREE.LatheBufferGeometry( points, 30, Math.PI *2 , Math.PI  ),
+            colinaMaterial
+        );
+        const colinaDerMesh = new THREE.Mesh( 
+            new THREE.LatheBufferGeometry( points, 30, Math.PI *2 , Math.PI  ),
+            colinaMaterial
+        );
+
+        colinaIzqMesh.rotation.z = Math.PI / 2;
+        colinaDerMesh.rotation.z = Math.PI / 2;
+        colinaDerMesh.rotation.y = Math.PI;
+        colinaDerMesh.position.x = -16;
+        colinaGroup.add( colinaDerMesh, colinaIzqMesh );
+
+        colinaGroup.scale.set( 0.4, 0.2, 0.3 );
+        colinaGroup.position.y = -1.2;
+        colinaGroup.rotation.y = Math.PI /2 ;
+        colinaGroup.position.z = -0.5;
+        colinaGroup.position.x = -12;
+        // Comentar para quitar de la escena.
+        scene.add( colinaGroup );
+
+        const colinaMesh = colinaGroup.clone( true );
+        colinaMesh.position.x = -7;
+        colinaMesh.rotation.y = Math.PI / 5;
+        colinaMesh.position.z = -6;
+        // Comentar para quitar de la escena.
+        scene.add( colinaMesh );
+
+        // Tierra costado
+        const bordeTierraGroup = new THREE.Group();
+        const tierraMaterial = new THREE.MeshStandardMaterial( { color:'#8B4513' } );
+
+        const tierraFrenteMesh = new THREE.Mesh(
+            new THREE.BoxBufferGeometry( 1, 1.8, 20.4 ),
+            tierraMaterial
+        );
+        tierraFrenteMesh.position.x = 8; 
+        tierraFrenteMesh.position.y -= 0.919;
+
+        const tierraFondoMesh = new THREE.Mesh(
+            new THREE.BoxBufferGeometry( 1, 1.8, 20.4 ),
+            tierraMaterial
+        );
+        tierraFondoMesh.position.x = -16; 
+        tierraFondoMesh.position.y -= 0.919;
+
+        const tierraCostadoIzqMesh = new THREE.Mesh(
+            new THREE.BoxBufferGeometry( 1, 1.8, 23 ),
+            tierraMaterial
+        );
+        tierraCostadoIzqMesh.position.x = -4; 
+        tierraCostadoIzqMesh.rotation.y = Math.PI/2;
+        tierraCostadoIzqMesh.position.y -= 0.919;
+        tierraCostadoIzqMesh.position.z = 9.7;
+
+        const tierraCostadoDerMesh = new THREE.Mesh(
+            new THREE.BoxBufferGeometry( 1, 1.8, 23 ),
+            tierraMaterial
+        );
+        tierraCostadoDerMesh.position.x = -4; 
+        tierraCostadoDerMesh.rotation.y = Math.PI/2;
+        tierraCostadoDerMesh.position.y -= 0.919;
+        tierraCostadoDerMesh.position.z = -9.7;
+
+        const tierraBajoMesh = new THREE.Mesh(
+            new THREE.BoxBufferGeometry( 20.2, 0.5, 23 ),
+            tierraMaterial
+        );
+        tierraBajoMesh.position.x = -4; 
+        tierraBajoMesh.rotation.y = Math.PI/2;
+        tierraBajoMesh.position.y -= 1.59;
+
+        bordeTierraGroup.add( tierraFrenteMesh, tierraFondoMesh, tierraCostadoIzqMesh, tierraCostadoDerMesh, tierraBajoMesh );
+        // Comentar para quitar de la escena.
+        scene.add( bordeTierraGroup );
+
+// FIN TERRENO /////////////////////////////////////////////////////////////////////////////// 
+
+///////////////////////////////////////////////////////////////////////////////// INICIO AGUA 
+
+        const aguaMaterial = {
+            clearcoat: 1.0,
+            clearcoatRoughness: 0.1,
+            metalness:0.9,
+            roughness: 0.9,
+            color: '#1490DA'
+        };
+
+        const aguaPlaneMesh = new THREE.Mesh( 
+            new THREE.BoxBufferGeometry( 5, 20.4 ), 
+            new THREE.MeshPhysicalMaterial( aguaMaterial )  
+        );
+
+        aguaPlaneMesh.rotation.x = -Math.PI / 2;
+        aguaPlaneMesh.position.x = 11;
+        aguaPlaneMesh.position.y = -1.2;
+        scene.add( aguaPlaneMesh );
+
+// FIN AGUA  /////////////////////////////////////////////////////////////////////////////// 
+
+        /** Animate **/
+        const clock = new THREE.Clock();
+
+        const animate = () => {
+            const elapsedTime = clock.getElapsedTime();
                 
-                banderaWind( elapsedTime );
-            
+            banderaWind( elapsedTime );
 
-                renderer.render( scene, camera );
+            renderer.render( scene, camera );
                 
-                // Target => 60 fps
-                window.requestAnimationFrame( animate );
-            };
+            // Target => 60 fps
+            window.requestAnimationFrame( animate );
+        };
 
-            animate();
+        animate();
 
 
             // Resize
-            window.addEventListener('resize', () => 
-            {
-                camera.aspect = window.innerWidth / window.innerHeight;
-                camera.updateProjectionMatrix();
-                renderer.setSize( window.innerWidth, window.innerHeight );
-                renderer.setPixelRatio( Math.min( window.devicePixelRatio, 2 ) );
-            });
+        window.addEventListener('resize', () => 
+        {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize( window.innerWidth, window.innerHeight );
+            renderer.setPixelRatio( Math.min( window.devicePixelRatio, 2 ) );
+        });
 
         </script>
 	</body>
