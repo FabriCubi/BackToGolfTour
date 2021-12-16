@@ -6,6 +6,7 @@
 
         <!--  -->
         <link type="text/css" rel="stylesheet" href="style.css">
+        <link rel = "icon" type = "image/png" href = "./favicon.png" >
         <title>BackToGolfTour!</title>
 	</head>
 	<body>
@@ -35,8 +36,9 @@
 
             /** Camera **/
             camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
-            camera.position.y = 5; 
-            camera.position.z = 20;
+            camera.position.y = 4;
+            camera.rotation.y = Math.PI /2;
+            camera.position.x = 15;
             scene.add( camera );
 
 
@@ -226,15 +228,39 @@
 // FIN ARBUSTOS /////////////////////////////////////////////////////////////////////////////// 
 
 ///////////////////////////////////////////////////////////////////////////////// INICIO PELOTA DE GOLF
+        var status = false, pelotavelocidad = 0;
+        
         const pelotaMesh = new THREE.Mesh(
             new THREE.SphereBufferGeometry( 0.1, 32, 32 ),
             new THREE.MeshStandardMaterial( { roughness: 0.7 } )
         );
         pelotaMesh.position.y = 0.1;
-        // Comentar para quitar de la escena.
-        scene.add( pelotaMesh );
 
-        //Animacion de la pelota al acercarse al hoyo.
+        // Animacion de la pelota al acercarse al hoyo. -Es necesario Teclado-
+        window.addEventListener( 'keydown', ( e ) => {
+            if( e.key == 'Q' || e.key == 'q' ){
+                if( !status ){
+                    scene.add( pelotaMesh );
+                    pelotaMesh.position.z = 8;
+                    pelotavelocidad = ( Math.floor( Math.random() * 40 ) + 1 ) / 100;
+                    status = true;
+                }else{
+                    ( pelotaMesh.position.z <= 0.2 && pelotaMesh.position.z >= -0.2 ) ? alert('Hoyo en uno!') : alert('Fallaste!');
+                    status = false;
+                }
+            }
+        } );
+
+        function pelotaMovimiento( pelotaMesh ){
+            if( status ){
+                if( pelotaMesh.position.z < -8.5 ){
+                    pelotavelocidad = 0;
+                }
+                pelotaMesh.position.z -= pelotavelocidad;
+                pelotaMesh.rotation.x -= pelotavelocidad;
+            }
+            
+        }
 
 // FIN PELOTA DE GOLF /////////////////////////////////////////////////////////////////////////////// 
 
@@ -429,9 +455,9 @@
 
         const animate = () => {
             const elapsedTime = clock.getElapsedTime();
-                
-            banderaWind( elapsedTime );
 
+            banderaWind( elapsedTime );
+            pelotaMovimiento( pelotaMesh );
             renderer.render( scene, camera );
                 
             // Target => 60 fps
