@@ -49,10 +49,19 @@
 
             // Directional light
             const sunLight = new THREE.DirectionalLight( '#ffffff', 0.5 );
-            sunLight.position.set( 4, 5, -2 );
+            sunLight.position.set( 2, 7, 0 );
             scene.add( sunLight );
 
-
+            /* Textures  && NormalMap*/
+            const loadManager = new THREE.LoadingManager();
+            const textureLoader = new THREE.TextureLoader(loadManager);
+            const pastoTexture = textureLoader.load('./images/greengrass.jpg');
+            const aguaTexture = textureLoader.load('./images/water.jpg');
+            const sueloTexture = textureLoader.load('./images/ground.jpg');
+            sueloTexture.repeat.set(1, 0.2);
+            pastoTexture.repeat.set(0.9, 0.9);
+            const pelotaTexture = textureLoader.load('./images/pelota.png');
+            
             /** Mesh && Geometry**/
 
 ///////////////////////////////////////////////////////////////////////////////// INICIO BANDERA DE GOLF
@@ -232,7 +241,7 @@
         
         const pelotaMesh = new THREE.Mesh(
             new THREE.SphereBufferGeometry( 0.1, 32, 32 ),
-            new THREE.MeshStandardMaterial( { roughness: 0.7 } )
+            new THREE.MeshStandardMaterial( { roughness: 0.7, normalMap: pelotaTexture } )
         );
         pelotaMesh.position.y = 0.1;
 
@@ -291,8 +300,8 @@
 ///////////////////////////////////////////////////////////////////////////////// INICIO TERRENO
 
         const greenMesh = new THREE.Mesh(
-            new THREE.RingBufferGeometry( 0.2, 4, 32, 30 ),
-            new THREE.MeshStandardMaterial( { color: '#43A047' } )
+            new THREE.RingBufferGeometry( 0.2, 4, 42, 1 ),
+            new THREE.MeshStandardMaterial( { color: '#43A047' , map: pastoTexture}  )
         );
         greenMesh.rotation.x = -Math.PI / 2;
         // Comentar para quitar de la escena.
@@ -380,7 +389,7 @@
 
         // Tierra costado
         const bordeTierraGroup = new THREE.Group();
-        const tierraMaterial = new THREE.MeshStandardMaterial( { color:'#8B4513' } );
+        const tierraMaterial = new THREE.MeshStandardMaterial( { color:'#8B3000', normalMap: sueloTexture } );
 
         const tierraFrenteMesh = new THREE.Mesh(
             new THREE.BoxBufferGeometry( 1, 1.8, 20.4 ),
@@ -431,11 +440,12 @@
 ///////////////////////////////////////////////////////////////////////////////// INICIO AGUA 
 
         const aguaMaterial = {
-            clearcoat: 1.0,
-            clearcoatRoughness: 0.1,
-            metalness:0.9,
-            roughness: 0.9,
-            color: '#1490DA'
+            clearcoat: 2.0,
+            clearcoatRoughness: 0.5,
+            metalness:0.7,
+            roughness: 0.7,
+            color: '#1490DA',
+            normalMap: aguaTexture,
         };
 
         const aguaPlaneMesh = new THREE.Mesh( 
