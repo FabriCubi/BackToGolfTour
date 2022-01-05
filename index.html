@@ -15,6 +15,9 @@
         <script type="module">
             import * as THREE from '/lib/three.module.js';
 			
+            import { FlyControls } from '/lib/FlyControls.js'
+
+
             const canvas = document.querySelector( "#renderCanvas" );
 
             let renderer = null, scene = null, camera = null;
@@ -41,7 +44,15 @@
             camera.position.x = 15;
             scene.add( camera );
 
-
+            // Controls
+            const controls = new FlyControls( camera, renderer.domElement );
+            
+            controls.movementSpeed = 100;
+            controls.rollSpeed = Math.PI / 2;
+            controls.autoForward = false;
+            controls.dragToLook = true;
+            
+            
             /** Lights **/
             // Ambient light
             const ambientLight = new THREE.AmbientLight( '#ffffff', 0.5 );
@@ -247,7 +258,7 @@
 
         // Animacion de la pelota al acercarse al hoyo. -Es necesario Teclado-
         window.addEventListener( 'keydown', ( e ) => {
-            if( e.key == 'Q' || e.key == 'q' ){
+            if( e.key == 'Z' || e.key == 'z' ){
                 if( !status ){
                     scene.add( pelotaMesh );
                     pelotaMesh.position.z = 8;
@@ -469,7 +480,10 @@
             banderaWind( elapsedTime );
             pelotaMovimiento( pelotaMesh );
             renderer.render( scene, camera );
-                
+            
+            // Update for controls 
+            controls.update(0.01)
+
             // Target => 60 fps
             window.requestAnimationFrame( animate );
         };
