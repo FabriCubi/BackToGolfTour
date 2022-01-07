@@ -52,7 +52,20 @@
             controls.autoForward = false;
             controls.dragToLook = true;
             
-            
+            // cubemap
+            {
+                const loader = new THREE.CubeTextureLoader();
+                const texture = loader.load([
+                '../images/skyCubemap/right_sky.png',
+                '../images/skyCubemap/left_sky.png',
+                '../images/skyCubemap/top_sky.png',
+                '../images/skyCubemap/bottom_sky.png',
+                '../images/skyCubemap/front_sky.png',
+                '../images/skyCubemap/back_sky.png'
+                ]);
+                scene.background = texture;
+            }
+
             /** Lights **/
             // Ambient light
             const ambientLight = new THREE.AmbientLight( '#ffffff', 0.5 );
