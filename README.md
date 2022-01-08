@@ -3,7 +3,7 @@
 Un Campo de Golf 3D diseñado con Three.js
 
 ## Controles Camara
-```
+
 **W** -> movimiento hacia arriba
 
 **S** -> movimiento hacia abajo
@@ -23,8 +23,7 @@ Un Campo de Golf 3D diseñado con Three.js
 **Q** -> Rota a la izquierda sobre el vector saliente a la camara
 
 **E** -> Rota a la derecha sobre el vector saliente a la camara
-```
+
 ## Interacion Pelota
-```
+
 Con la tecla **'L'** se lanza la pelota y se debe presionar de nuevo **'L'** tratando de dejarlo dentro del circulo más pequeño. -como un juego-
-```
