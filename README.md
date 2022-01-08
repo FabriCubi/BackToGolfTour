@@ -1,8 +1,8 @@
 # BackToGolfTour
 
-Un Campo de Golf 3D diseñado con Three.js
+Un Campo de Golf 3D diseñado con [Three.js](https://threejs.org/)
 
-## Controles Camara
+## Controles Cámara
 
 **W** -> movimiento hacia arriba
 
@@ -20,10 +20,10 @@ Un Campo de Golf 3D diseñado con Three.js
 
 **Flecha Derecha** -> rota la vista hacia derecha
 
-**Q** -> Rota a la izquierda sobre el vector saliente a la camara
+**Q** -> Rota a la izquierda sobre el vector saliente a la cámara
 
-**E** -> Rota a la derecha sobre el vector saliente a la camara
+**E** -> Rota a la derecha sobre el vector saliente a la cámara
 
-## Interacion Pelota
+## Interacción Pelota
 
 Con la tecla **'L'** se lanza la pelota y se debe presionar de nuevo **'L'** tratando de dejarlo dentro del circulo más pequeño. -como un juego-
