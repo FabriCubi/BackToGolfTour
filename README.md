@@ -1,6 +1,16 @@
 # BackToGolfTour
 
-Un Campo de Golf 3D diseñado con [Three.js](https://threejs.org/)
+Un Campo de Golf 3D diseñado con [Three.js](https://threejs.org/).
+
+Para visualizar existen dos formas de correr:
+- Forma 1:
+    - Arrastrar el archivo index.html en un navegador (De preferencia **Chrome**)
+- Forma 2:
+    - Descargar un live server para el editor de código Visual Studio Code
+    [LiveServer](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer)
+    - En la esquina inferior derecha presionar el botón GoLive.
+    - Automáticamente se levantará un servidor local en el puerto 5500
+    - En caso de no ingresar automáticamente puede ingresar a través de (http://localhost:5500/index.html/) 
 
 ## Controles Cámara
 
@@ -27,3 +37,6 @@ Un Campo de Golf 3D diseñado con [Three.js](https://threejs.org/)
 ## Interacción Pelota
 
 Con la tecla **'L'** se lanza la pelota y se debe presionar de nuevo **'L'** tratando de dejarlo dentro del circulo más pequeño. -como un juego-
+
+## Sonidos de ambiente
+Con la tecla **'P'** puede habilitar y deshabilitar los sonidos de ambiente.
