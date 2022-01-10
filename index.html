@@ -65,7 +65,28 @@
                 ]);
                 scene.background = texture;
             }
+            
+            //AUDIO
+            const listener = new THREE.AudioListener();
+            camera.add( listener );
 
+            // create a global audio source
+            const crowdSound = new THREE.Audio( listener );
+
+           
+            const audioLoader = new THREE.AudioLoader();
+            audioLoader.load( '../sounds/mixkit-meadow-wind-light-1166.wav', function( buffer ) {
+                crowdSound.setBuffer( buffer );
+                crowdSound.setLoop( true );
+                crowdSound.setVolume( 5.1 );
+                crowdSound.autoPlay = true;
+            });
+            
+            const engineAudioMesh = new THREE.Object3D();
+            scene.add( engineAudioMesh );
+            engineAudioMesh.add( crowdSound );
+
+            
             /** Lights **/
             // Ambient light
             const ambientLight = new THREE.AmbientLight( '#ffffff', 0.5 );
